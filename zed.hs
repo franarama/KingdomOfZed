@@ -2,9 +2,8 @@ import Data.List
 import Data.Maybe
 
 -- Returns a list of all possible maps with side length n.
--- Essentially returns n combinations of n permutations.
 getMaps :: Int -> [[[Int]]]
-getMaps n = combinations (permutations [1..n]) []
+getMaps n = concatMap permutations (combinations (permutations [1..n]) [])
   where
     combinations [] acc = if n == length acc then [acc] else []
     combinations (x:xs) acc
@@ -67,6 +66,20 @@ isValidMap :: (Ord a1, Num a2, Num a1, Eq a2) => [[a1]] -> [[a2]] -> Bool
 isValidMap kzMap clues = hasValidMerchants kzMap clues &&
                          hasUniqueRowsAndCols kzMap
 
-zed clue (north,east,south,west = [north, east, south, west]
+-- Make a Clue type so input can be of the form ([north],[east],[south],[west])
+type Clue = ([Integer],[Integer],[Integer],[Integer])
 
+getSizeFromClue :: Foldable t => (t a, b, c, d) -> Int
+-- helper function that returns side length given a Clue type input
+getSizeFromClue (n,_,_,_) = length n
 
+getValidMaps :: (Ord a1, Num a2, Num a1, Eq a2) => ([a2], [a2], [a2], [a2]) -> [[[a1]]] -> Maybe [[a1]]
+getValidMaps clue kzMaps = getZedMaps clue kzMaps
+  where
+    getZedMaps _ [] = Nothing
+    getZedMaps (n,e,s,w) (x:xs)
+      | isValidMap x [n,e,s,w] == True = Just x
+      | otherwise = (getZedMaps (n,e,s,w) xs)
+
+zed :: (Num a, Eq a) => ([a], [a], [a], [a]) -> Maybe [[Int]]
+zed (clue) = getValidMaps clue (getMaps(getSizeFromClue clue))
