@@ -69,10 +69,11 @@ isValidMap kzMap clues = hasValidMerchants kzMap clues &&
 -- Make a Clue type so input can be of the form ([north],[east],[south],[west])
 type Clue = ([Integer],[Integer],[Integer],[Integer])
 
-getSizeFromClue :: Foldable t => (t a, b, c, d) -> Int
 -- helper function that returns side length given a Clue type input
+getSizeFromClue :: Foldable t => (t a, b, c, d) -> Int
 getSizeFromClue (n,_,_,_) = length n
 
+-- Returns a possible map if one exists otherwise nothing.
 getValidMaps :: (Ord a1, Num a2, Num a1, Eq a2) => ([a2], [a2], [a2], [a2]) -> [[[a1]]] -> Maybe [[a1]]
 getValidMaps clue kzMaps = getZedMaps clue kzMaps
   where
@@ -81,5 +82,7 @@ getValidMaps clue kzMaps = getZedMaps clue kzMaps
       | isValidMap x [n,e,s,w] == True = Just x
       | otherwise = (getZedMaps (n,e,s,w) xs)
 
-zed :: (Num a, Eq a) => ([a], [a], [a], [a]) -> Maybe [[Int]]
-zed (clue) = getValidMaps clue (getMaps(getSizeFromClue clue))
+-- Main zed function. Takes a clue and returns a possible map.
+zed :: (Num a, Eq a) => ([a], [a], [a], [a]) -> IO ()
+zed (clue) = if (hasMap /= Nothing) then mapM_ print (fromJust hasMap) else putStrLn "No maps"
+  where hasMap = (getValidMaps clue (getMaps(getSizeFromClue clue)))
