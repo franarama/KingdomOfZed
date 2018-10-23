@@ -6,9 +6,7 @@ getMaps :: Int -> [[[Int]]]
 getMaps n = concatMap permutations (combinations (permutations [1..n]) [])
   where
     combinations [] acc = if n == length acc then [acc] else []
-    combinations (x:xs) acc
-      | n == length acc = [acc]
-      | otherwise = combinations xs (x:acc) ++ combinations xs acc
+    combinations (x:xs) acc = combinations xs (x:acc) ++ combinations xs acc
 
 -- Helper function that simply checks if a list has all unique elements.
 allUnique :: Eq a => [a] -> Bool
@@ -22,7 +20,7 @@ hasUniqueRowsAndCols :: Eq a => [[a]] -> Bool
 hasUniqueRowsAndCols kzMap = and (map allUnique kzMap) &&
                              and (map allUnique (transpose kzMap))
 
--- numVisits returns how many visits a merchant would make
+-- Returns how many visits a merchant would make
 -- given a list of trading posts
 getVisits :: (Ord t1, Num t2, Num t1) => [t1] -> t2
 getVisits xs = numVisits xs 0 0
@@ -43,8 +41,7 @@ checkMerchantClues kzMap clues = checkMerchants kzMap clues 0
       | getVisits x == (visits !! count) = (checkMerchants xs visits (count+1))
       | otherwise = False
 
--- helper function that reverses each list in a list of lists (maintains
--- their order though!)
+-- helper function that reverses each list in a list of lists
 reverseEach :: [[a]] -> [[a]]
 reverseEach xs = map (\x -> reverse x) xs
 
