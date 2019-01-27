@@ -1,6 +1,6 @@
 {-
 
-   Francesca Ramunno: T00053082
+   Francesca Ramunno
    Comp 3120
 
    --------------
@@ -14,9 +14,6 @@
 
    The additional functionality is noted in the comments above the appropriate
    function, with a **.
-
-   Note this solution uses no intelligent solving which means it can be
-   slow for larger map sizes.
 
 -}
 
